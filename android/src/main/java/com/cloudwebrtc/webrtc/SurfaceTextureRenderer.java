@@ -142,21 +142,15 @@ public class SurfaceTextureRenderer extends EglRenderer {
   public void surfaceCreated(final TextureRegistry.SurfaceProducer producer) {
     ThreadUtils.checkIsOnMainThread();
     this.producer = producer;
+    this.surface = producer.getSurface(); // Get the Surface from the producer
 
-    SurfaceTexture surfaceTexture = this.producer.getSurfaceTexture();
-    if (surfaceTexture != null) {
-      surfaceTexture.setOnFrameAvailableListener(new SurfaceTexture.OnFrameAvailableListener() {
-        @Override
-        public void onFrameAvailable(SurfaceTexture surfaceTexture) {
-          // Handle new frame available
-          // You may need to request a redraw or update the frame here
-        }
-      });
+    if (this.surface != null) {
+      // Perform any necessary surface initialization
     } else {
-      // Log or handle the case where SurfaceTexture is null
-      System.err.println("SurfaceTexture is null!");
+      System.err.println("Surface is null!");
     }
   }
+
 
 
   public void surfaceDestroyed() {
