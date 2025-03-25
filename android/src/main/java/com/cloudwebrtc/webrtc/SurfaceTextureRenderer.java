@@ -111,10 +111,10 @@ public class SurfaceTextureRenderer extends EglRenderer {
 
   private TextureRegistry.SurfaceProducer producer;
 
-  public void surfaceCreated(final TextureRegistry.SurfaceProducer producer) {
+  /*public void surfaceCreated(final TextureRegistry.SurfaceProducer producer) {
     ThreadUtils.checkIsOnMainThread();
     this.producer = producer;
-    this.producer.setCallback(
+    *//*this.producer.setCallback(
             new TextureRegistry.SurfaceProducer.Callback() {
               @Override
               public void onSurfaceAvailable() {
@@ -126,8 +126,38 @@ public class SurfaceTextureRenderer extends EglRenderer {
                 surfaceDestroyed();
               }
             }
+    );*//*
+
+    this.producer.getSurfaceTexture().setOnFrameAvailableListener(
+            new SurfaceTexture.OnFrameAvailableListener() {
+              @Override
+              public void onFrameAvailable(SurfaceTexture surfaceTexture) {
+                // Handle new frame available
+              }
+            }
     );
+
+  }*/
+
+  public void surfaceCreated(final TextureRegistry.SurfaceProducer producer) {
+    ThreadUtils.checkIsOnMainThread();
+    this.producer = producer;
+
+    SurfaceTexture surfaceTexture = this.producer.getSurfaceTexture();
+    if (surfaceTexture != null) {
+      surfaceTexture.setOnFrameAvailableListener(new SurfaceTexture.OnFrameAvailableListener() {
+        @Override
+        public void onFrameAvailable(SurfaceTexture surfaceTexture) {
+          // Handle new frame available
+          // You may need to request a redraw or update the frame here
+        }
+      });
+    } else {
+      // Log or handle the case where SurfaceTexture is null
+      System.err.println("SurfaceTexture is null!");
+    }
   }
+
 
   public void surfaceDestroyed() {
     ThreadUtils.checkIsOnMainThread();
